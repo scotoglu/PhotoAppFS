@@ -30,7 +30,7 @@ export default class Home extends Component {
   getNetworkState = () => {
     NetInfo.fetch().then(state => {
       console.log('Connection type', state.type);
-      console.log('Is Connected?', state.isConnected);
+
       if (state.isConnected) {
         //do nothing
         console.log('Device has network connection...');

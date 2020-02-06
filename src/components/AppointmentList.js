@@ -7,10 +7,14 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  AsyncStorage,
+  Image,
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import Modal from 'react-native-modal';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 //components
 import CardAppointment from '../components/AppointmentCard';
 import HeaderBar from './HeaderBar';
@@ -23,6 +27,7 @@ export default class AppointmentList extends Component {
     this.state = {
       appointments: [],
       isVisible: false,
+      userToken: '',
     };
   }
   componentDidMount() {
@@ -40,33 +45,51 @@ export default class AppointmentList extends Component {
       isVisible: !this.state.isVisible,
     });
   };
-  getAppointments = () => {
-    this.setModalVisibility();
+  getAppointments = async () => {
+    console.log('getAppointments Active...');
 
-    let url = 'http://test.sinemkobaner.com/api/GetAppointments';
+    this.setModalVisibility();
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      console.log('Token', token);
+      this.setState({
+        userToken: token,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    let url = 'http://api.sinemkobaner.com/api/GetAppointments';
     axios
       .get(url, {
-        params: {
-          customerId: '300c18fb-0191-4e95-8e37-60e73b74801c',
+        headers: {
+          Authorization: 'Bearer ' + this.state.userToken,
         },
       })
       .then(res => {
         let tempData = [];
         for (let index = 0; index < res.data.length; index++) {
           tempData.push(res.data[index]);
-          console.log('------------------------------------');
-          console.log(res.data[index].state);
         }
         this.setState({
           appointments: tempData,
         });
         this.setModalVisibility();
-        console.log(this.state.appointments[0].name);
       })
       .catch(err => {
-        console.log(err.response);
+        console.log('E......', err.response);
+        this.setModalVisibility();
       });
   };
+
+  signOut = async () => {
+    console.log('Clicked....');
+
+    try {
+      await AsyncStorage.removeItem('jwt_token');
+      Actions.login();
+    } catch (error) {}
+  };
+
   render() {
     return (
       <>
@@ -79,6 +102,8 @@ export default class AppointmentList extends Component {
           }}>
           <View
             style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
               alignItems: 'center',
               borderBottomWidth: 2,
               borderTopWidth: 2,
@@ -89,6 +114,9 @@ export default class AppointmentList extends Component {
             <Text style={{fontSize: 20, fontWeight: '900', color: Color.TEXT}}>
               Randevular
             </Text>
+            <TouchableOpacity style={{marginLeft: 20}} onPress={this.signOut}>
+              <Icon name="times-circle" size={25}></Icon>
+            </TouchableOpacity>
           </View>
           <Modal
             style={{margin: 0}}
@@ -119,14 +147,17 @@ export default class AppointmentList extends Component {
                     activeOpacity={0.3}
                     key={i}
                     onPress={() => {
-                      console.log('id:', item.state);
-                      console.log('İtems', item.name);
+                      console.log('State...:', item.state);
+                      console.log('İtems...', item.name);
+                      console.log('Token...', this.state.userToken);
+
                       if (item.state < 2) {
                         Alert.alert('', 'Henüz Hazır Değil', [{text: 'Tamam'}]);
                       } else {
                         Actions.profile({
                           appointmentId: item.id,
                           customer: item.name,
+                          token: this.state.userToken,
                         });
                       }
                     }}>

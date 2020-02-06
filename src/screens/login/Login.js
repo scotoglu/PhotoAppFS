@@ -8,10 +8,14 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   AsyncStorage,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import {Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Actions} from 'react-native-router-flux';
+import axios from 'axios';
 import Color from '../../constant/Color';
 export default class Login extends Component {
   constructor(props) {
@@ -19,13 +23,12 @@ export default class Login extends Component {
     this.state = {
       userMail: '',
       userPassword: '',
+      token: '',
+      isModalVisible: false,
     };
-    this.handleUserMail = this.handleUserMail.bind(this);
-    this.handleUserPassword = this.handleUserPassword.bind(this);
-    this.login = this.login.bind(this);
-    this.userAlreadyLogin = this.userAlreadyLogin.bind(this);
   }
   componentDidMount() {
+    console.log('Login Screen');
     this.userAlreadyLogin();
   }
   handleUserMail = text => {
@@ -42,39 +45,82 @@ export default class Login extends Component {
       });
     }
   };
+
+  getToken = async () => {
+    console.log('getToken Active...');
+    this.setModalVisibility();
+    let url = 'http://api.sinemkobaner.com/Api/Login';
+    let formData = new FormData();
+    formData.append('Email', this.state.userMail);
+    formData.append('Password', this.state.userPassword);
+    axios
+      .post(url, formData)
+      .then(res => {
+        let tmpToken = '';
+        if (res.status >= 200) {
+          tmpToken = res.data;
+          this.setToken(tmpToken);
+          this.setModalVisibility();
+          Actions.appointmentList();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.setModalVisibility();
+        Alert.alert('Hata', 'Yanlış Mail Adresi ya da Şifre');
+      });
+  };
+  setToken = async token => {
+    console.log('SetToken Active...');
+
+    try {
+      await AsyncStorage.setItem('jwt_token', token);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  setModalVisibility = () => {
+    this.setState({
+      isModalVisible: !this.state.isModalVisible,
+    });
+  };
   //checks if user already login
   userAlreadyLogin = async () => {
-    const logKey = await AsyncStorage.getItem('mail');
-    try {
-      if (logKey != null) {
-        Actions.appointmentList();
-      }
-      return null;
-    } catch (error) {
-      console.log('Login userAlreadyLogin control.  ' + error);
+    const userToken = await AsyncStorage.getItem('jwt_token');
+    if (userToken === null) {
+    } else {
+      Actions.appointmentList();
     }
   };
 
   login = async () => {
-    const logKey = await AsyncStorage.getItem('mail');
-    try {
-      if (this.state.userMail === logKey) {
-        Actions.appointmentList();
-      } else {
-        alert('Wrong user...');
-        if (logKey === null) {
-          await AsyncStorage.setItem('mail', this.state.userMail);
-        }
-      }
-
-      return null;
-    } catch (error) {
-      console.log('Login userAlreadyLogin control.  ' + error);
+    console.log('Login Active Login.js...');
+    if (this.state.userMail === '' && this.state.userPassword === '') {
+      Alert.alert('Uyarı', 'Mail adresi ya da Şifre alanlanları boş olamaz');
+    } else {
+      this.getToken();
     }
   };
   render() {
     return (
       <KeyboardAvoidingView style={styles.Container} enabled>
+        <Modal
+          style={{
+            flex: 1,
+            margin: 0,
+          }}
+          visible={this.state.isModalVisible}
+          onRequestClose={() => console.log('Close Pressed...')}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#rgba(0, 0, 0 ,0.6 )',
+            }}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        </Modal>
         <View style={styles.logoContainer}>
           <Image
             source={require('../../assets/logo/logov3.jpg')}

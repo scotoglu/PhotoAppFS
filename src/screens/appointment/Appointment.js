@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
+  AsyncStorage,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import {Dropdown} from 'react-native-material-dropdown';
@@ -38,10 +39,17 @@ export default class Appointment extends Component {
       photoTypes: [],
       selectedPhotoTypeID: '',
       isModalVisible: false,
+      userToken: '',
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      this.setState({
+        userToken: token,
+      });
+    } catch (error) {}
     this.getPhotoTypes();
   }
   handleName = text => {
@@ -90,7 +98,7 @@ export default class Appointment extends Component {
   /*when user entered the photoType and date, 
   then func will fetch the available times*/
   getAvaliableTimes = () => {
-    let url = 'http://test.sinemkobaner.com/Api/GetAvailableAppointmentDates';
+    let url = 'http://api.sinemkobaner.com/Api/GetAvailableAppointmentDates';
 
     //send get request
     axios
@@ -98,6 +106,9 @@ export default class Appointment extends Component {
         params: {
           start: this.state.date,
           photoShootType: this.state.selectedPhotoTypeID,
+        },
+        headers: {
+          Authorization: 'Bearer ' + this.state.userToken,
         },
       })
       .then(res => {
@@ -121,7 +132,7 @@ export default class Appointment extends Component {
         });
       })
       .catch(err => {
-        console.log(err.response);
+        console.log('Get Availablel Times...', err.response);
       });
   };
 
@@ -161,7 +172,7 @@ export default class Appointment extends Component {
   sendUserRequest = () => {
     console.log('SendUserRequest...');
 
-    let url = 'http://test.sinemkobaner.com/Api/AddAppointmentRequest';
+    let url = 'http://api.sinemkobaner.com/Api/AddAppointmentRequest';
     const formData = new FormData();
     formData.append('Name', this.state.name);
     formData.append('Phone', this.state.phone);
@@ -179,6 +190,7 @@ export default class Appointment extends Component {
       .post(url, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: 'Bearer ' + this.state.userToken,
         },
       })
       .then(res => {
@@ -193,7 +205,7 @@ export default class Appointment extends Component {
         }
       })
       .catch(err => {
-        console.log('err');
+        console.log('Send User Request...', err.response);
         Alert.alert('Hata', 'Hata! Tekrar Deneyin...', [{text: 'Tamam'}]);
       });
   };
@@ -201,7 +213,11 @@ export default class Appointment extends Component {
   //Fetch photo shoot types
   getPhotoTypes = () => {
     axios
-      .get('http://test.sinemkobaner.com/api/GetPhotoShootTypes')
+      .get('http://api.sinemkobaner.com/api/GetPhotoShootTypes', {
+        headers: {
+          Authorization: 'Bearer ' + this.state.userToken,
+        },
+      })
       .then(res => {
         console.log(res.data);
         let tmpTypes = [];
@@ -268,12 +284,7 @@ export default class Appointment extends Component {
                 placeholder="Adınız ve Soyadınız"
                 leftIcon={
                   <View>
-                    <Icon
-                      name="user"
-                      size={24}
-                      color="black"
-                      //     style={styles.inputIcons}
-                    />
+                    <Icon name="user" size={24} color="black" />
                   </View>
                 }
               />
@@ -288,12 +299,7 @@ export default class Appointment extends Component {
                 placeholder="Telefon Numaranız"
                 leftIcon={
                   <View>
-                    <Icon
-                      name="phone"
-                      size={24}
-                      color="black"
-                      //  style={styles.inputIcons}
-                    />
+                    <Icon name="phone" size={24} color="black" />
                   </View>
                 }
               />
@@ -309,12 +315,7 @@ export default class Appointment extends Component {
                 placeholder="Mail Adresiniz"
                 leftIcon={
                   <View>
-                    <Icon
-                      name="at"
-                      size={24}
-                      color="black"
-                      //   style={styles.inputIcons}
-                    />
+                    <Icon name="at" size={24} color="black" />
                   </View>
                 }
               />

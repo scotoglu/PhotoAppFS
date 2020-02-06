@@ -18,7 +18,6 @@ import {Actions} from 'react-native-router-flux';
 import axios from 'axios';
 //Components
 import HeaderBar from '../../components/HeaderBar';
-
 export default class Profile extends Component {
   constructor(props) {
     super(props);
@@ -27,52 +26,72 @@ export default class Profile extends Component {
       images: [],
       modalVisible: false,
       modalImageId: '',
+      userToken: '',
     };
   }
   componentDidMount() {
-    this.getPhotos();
+    console.log('Props token...', this.props.token);
+
     this.setState({
       name: this.props.customer,
+      userToken: this.props.token,
     });
-    this.userAlreadylogin();
+    //  this.getTokenLocal();
+    this.getPhotos();
   }
-  getPhotos = () => {
-    let url = 'http://test.sinemkobaner.com/api/getphotos';
+
+  // getTokenLocal = async () => {
+  //   console.log('GetTokenLocal....Active.');
+
+  //   let token = await AsyncStorage.getItem('jwt_token');
+
+  //   console.log('GetTokenLocal...', token);
+
+  //   this.setState({
+  //     userToken: token,
+  //   });
+  // };
+
+  getPhotos = async () => {
+    console.log('getPhotos Active... Profile.js');
+    this.setModalVisible();
+
+    // let token = this.getTokenLocal();
+    // console.log('aaaaaa......', token);
+
+    console.log('State Token...', this.state.userToken);
+
+    let url = 'http://api.sinemkobaner.com/api/getphotos';
     axios
       .get(url, {
         params: {
           appointmentId: this.props.appointmentId,
-          customerId: '300c18fb-0191-4e95-8e37-60e73b74801c',
+        },
+        headers: {
+          Authorization: 'Bearer ' + this.props.token,
         },
       })
       .then(res => {
+        console.log('Res Data...', res.data);
+
         let tmpImages = [];
         for (let index = 0; index < res.data.length; index++) {
-          tmpImages.push({id: res.data[index].id, path: res.data[index].path});
+          tmpImages.push({
+            id: res.data[index].id,
+            path: res.data[index].thumbnailPath,
+          });
         }
         this.setState({
           images: tmpImages,
         });
+        this.setModalVisible();
       })
       .catch(err => {
-        console.log(err.response);
+        this.setModalVisible();
+        console.log('GetPhotos axios catch...', err.response);
       });
   };
-  userAlreadylogin = async () => {
-    //I'll check with jwt token after the api request
-    try {
-      // console.log('Profile userAlreadyLogin Ok...');
 
-      const logKey = await AsyncStorage.getItem('mail');
-      if (logKey != null) {
-        return null;
-      } else {
-        Actions.login();
-      }
-    } catch (error) {
-      console.log('Profile userAlreadyLogin() control  ' + error);
-    }
-  };
   setModalVisible = visible => {
     this.setState({modalVisible: visible});
   };
@@ -95,10 +114,8 @@ export default class Profile extends Component {
   };
 
   signOut = async () => {
-    console.log('Clicked....');
-
     try {
-      await AsyncStorage.removeItem('mail');
+      await AsyncStorage.removeItem('jwt_token');
       Actions.login();
     } catch (error) {}
   };

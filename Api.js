@@ -7,7 +7,7 @@ class AppAPI {
   }
 
   getAvailableAppoinmentTimes = ({selectedDate, photoType}) => {
-    axios
+    return axios
       .get(baseURL, {
         params: {
           start: selectedDate,

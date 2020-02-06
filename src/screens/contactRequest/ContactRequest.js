@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
+  AsyncStorage,
 } from 'react-native';
 import {Input, Button, Text} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -14,7 +15,6 @@ import Modal from 'react-native-modal';
 //Components
 import HeaderBar from '../../components/HeaderBar';
 import axios from 'axios';
-import {set} from 'react-native-reanimated';
 export default class ContactRequest extends Component {
   constructor() {
     super();
@@ -25,9 +25,20 @@ export default class ContactRequest extends Component {
       subject: '',
       message: '',
       isModalVisible: false,
+      userToken: '',
     };
   }
-
+  async componentDidMount() {
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      console.log('Token...', token);
+      this.setState({
+        userToken: token,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   handleName = text => {
     this.setState({name: text});
   };
@@ -47,6 +58,8 @@ export default class ContactRequest extends Component {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
   onButtonPress = () => {
+    console.log('State Token...', this.state.userToken);
+
     if (
       this.state.name != '' &&
       this.state.phone != '' &&
@@ -71,7 +84,7 @@ export default class ContactRequest extends Component {
   };
 
   sendUserRequest = () => {
-    let url = 'http://test.sinemkobaner.com/api/AddContactRequest';
+    let url = 'http://api.sinemkobaner.com/api/AddContactRequest';
     let formData = new FormData();
     formData.append('Name', this.state.name);
     formData.append('Email', this.state.mail);
@@ -83,6 +96,7 @@ export default class ContactRequest extends Component {
       .post(url, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: 'Bearer ' + this.state.userToken.toString(),
         },
       })
       .then(res => {
@@ -97,8 +111,9 @@ export default class ContactRequest extends Component {
         }
       })
       .catch(err => {
-        console.log(err.response);
+        console.log('Error Response...', err.response);
         Alert.alert('Hata', 'Tekrar Deneyin.', [{text: 'Tamam'}]);
+        this.setModalVisibility();
       });
   };
 
@@ -126,7 +141,7 @@ export default class ContactRequest extends Component {
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#rgba(0, 0, 0 ,0.6 )',
+              backgroundColor: '#rgba(0, 0, 0 ,0.6 )', //sets transparent black background of modal
             }}>
             <ActivityIndicator size="large" color="black" />
           </View>

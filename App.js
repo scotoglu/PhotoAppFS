@@ -64,13 +64,7 @@ class App extends Component {
             icon={({tintColor}) => (
               <Icon name="user" color={tintColor} size={24} />
             )}>
-            <Scene
-              tabs={true}
-              key="profile"
-              component={Profile}
-              hideNavBar
-              type="replace"
-            />
+            <Scene tabs={true} key="profile" component={Profile} hideNavBar />
             <Scene tabs={true} hideNavBar key="login" component={Login} clone />
             <Scene
               tabs={true}
