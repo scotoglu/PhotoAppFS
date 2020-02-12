@@ -20,6 +20,7 @@ import CardAppointment from '../components/AppointmentCard';
 import HeaderBar from './HeaderBar';
 //Constants
 import Color from '../constant/Color';
+import Utilies from '../constant/Utilities';
 
 export default class AppointmentList extends Component {
   constructor(props) {
@@ -34,7 +35,16 @@ export default class AppointmentList extends Component {
     this.getAppointments();
   }
   emptyAppointmentsList = () => {
-    return (
+    return this.state.isVisible ? (
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'row',
+        }}>
+        <Text>Yükleniyor</Text>
+      </View>
+    ) : (
       <View style={{alignItems: 'center'}}>
         <Text style={{fontSize: 25}}>Randevu bulunamadı.</Text>
       </View>
@@ -58,7 +68,7 @@ export default class AppointmentList extends Component {
     } catch (error) {
       console.log(error);
     }
-    let url = 'http://api.sinemkobaner.com/api/GetAppointments';
+    let url = Utilies.BASE_URL + 'GetAppointments';
     axios
       .get(url, {
         headers: {
@@ -147,10 +157,6 @@ export default class AppointmentList extends Component {
                     activeOpacity={0.3}
                     key={i}
                     onPress={() => {
-                      console.log('State...:', item.state);
-                      console.log('İtems...', item.name);
-                      console.log('Token...', this.state.userToken);
-
                       if (item.state < 2) {
                         Alert.alert('', 'Henüz Hazır Değil', [{text: 'Tamam'}]);
                       } else {

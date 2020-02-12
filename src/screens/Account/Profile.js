@@ -10,6 +10,8 @@ import {
   ActivityIndicator,
   SafeAreaView,
   AsyncStorage,
+  InteractionManager,
+  BackHandler,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
@@ -18,6 +20,7 @@ import {Actions} from 'react-native-router-flux';
 import axios from 'axios';
 //Components
 import HeaderBar from '../../components/HeaderBar';
+import Utilities from '../../constant/Utilities';
 export default class Profile extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +34,9 @@ export default class Profile extends Component {
   }
   componentDidMount() {
     console.log('Props token...', this.props.token);
-
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      console.log('Back Pressed...');
+    });
     this.setState({
       name: this.props.customer,
       userToken: this.props.token,
@@ -39,19 +44,6 @@ export default class Profile extends Component {
     //  this.getTokenLocal();
     this.getPhotos();
   }
-
-  // getTokenLocal = async () => {
-  //   console.log('GetTokenLocal....Active.');
-
-  //   let token = await AsyncStorage.getItem('jwt_token');
-
-  //   console.log('GetTokenLocal...', token);
-
-  //   this.setState({
-  //     userToken: token,
-  //   });
-  // };
-
   getPhotos = async () => {
     console.log('getPhotos Active... Profile.js');
     this.setModalVisible();
@@ -61,7 +53,7 @@ export default class Profile extends Component {
 
     console.log('State Token...', this.state.userToken);
 
-    let url = 'http://api.sinemkobaner.com/api/getphotos';
+    let url = Utilities.BASE_URL + 'getphotos';
     axios
       .get(url, {
         params: {

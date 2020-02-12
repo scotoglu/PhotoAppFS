@@ -20,6 +20,7 @@ import Modal from 'react-native-modal';
 import HeaderBar from '../../components/HeaderBar';
 //Constants
 import Color from '../../constant/Color';
+import Utilities from '../../constant/Utilities';
 export default class Appointment extends Component {
   constructor(props) {
     super(props);
@@ -42,7 +43,6 @@ export default class Appointment extends Component {
       userToken: '',
     };
   }
-
   async componentDidMount() {
     try {
       const token = await AsyncStorage.getItem('jwt_token');
@@ -94,11 +94,8 @@ export default class Appointment extends Component {
       selectedPhotoTypeID: data[index].id,
     });
   };
-
-  /*when user entered the photoType and date, 
-  then func will fetch the available times*/
   getAvaliableTimes = () => {
-    let url = 'http://api.sinemkobaner.com/Api/GetAvailableAppointmentDates';
+    let url = Utilities.BASE_URL + 'GetAvailableAppointmentDates';
 
     //send get request
     axios
@@ -135,7 +132,6 @@ export default class Appointment extends Component {
         console.log('Get Availablel Times...', err.response);
       });
   };
-
   onButtonPress = () => {
     this.setEmpty();
     if (
@@ -172,17 +168,14 @@ export default class Appointment extends Component {
   sendUserRequest = () => {
     console.log('SendUserRequest...');
 
-    let url = 'http://api.sinemkobaner.com/Api/AddAppointmentRequest';
+    let url = Utilities.BASE_URL + 'AddAppointmentRequest';
     const formData = new FormData();
     formData.append('Name', this.state.name);
     formData.append('Phone', this.state.phone);
     formData.append('Email', this.state.mail);
     formData.append('Message', this.state.message);
     formData.append('ScheduleId', this.state.avaliableTimeID);
-    formData.append('DateHourStart', this.state.startHour);
-    formData.append('DateHourEnd', this.state.endHour);
     formData.append('ShootTypeId', this.state.selectedPhotoTypeID);
-    formData.append('Date', this.state.date);
     console.log(formData);
 
     this.setModalVisibility();
@@ -209,11 +202,9 @@ export default class Appointment extends Component {
         Alert.alert('Hata', 'Hata! Tekrar Deneyin...', [{text: 'Tamam'}]);
       });
   };
-
-  //Fetch photo shoot types
   getPhotoTypes = () => {
     axios
-      .get('http://api.sinemkobaner.com/api/GetPhotoShootTypes', {
+      .get(Utilities.BASE_URL + 'GetPhotoShootTypes', {
         headers: {
           Authorization: 'Bearer ' + this.state.userToken,
         },

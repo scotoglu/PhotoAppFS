@@ -169,14 +169,14 @@ export default class Login extends Component {
             }}>
             <Text>Şifremi Unuttum</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={0.6}
             style={styles.forgottenPassword}
             onPress={() => {
               Actions.home({text: 'sfgsfhr'});
             }}>
             <Text>Anasayfa</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     );

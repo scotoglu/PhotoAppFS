@@ -15,11 +15,11 @@ import ContactRequest from './src/screens/contactRequest/ContactRequest';
 import Works from './src/screens/works/Work';
 import Profile from './src/screens/Account/Profile';
 import ForgottenPassword from './src/screens/login/ForgottenPassword';
+import AppointmentList from './src/components/AppointmentList';
 
 //Packages
 import {Router, Stack, Tabs, Scene, Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AppointmentList from './src/components/AppointmentList';
 Icon.loadFont();
 
 class App extends Component {
@@ -64,21 +64,19 @@ class App extends Component {
             icon={({tintColor}) => (
               <Icon name="user" color={tintColor} size={24} />
             )}>
-            <Scene tabs={true} key="profile" component={Profile} hideNavBar />
             <Scene tabs={true} hideNavBar key="login" component={Login} clone />
             <Scene
               tabs={true}
               hideNavBar
               key="appointmentList"
               component={AppointmentList}
-              type="replace"
             />
+            <Scene tabs={true} key="profile" component={Profile} hideNavBar />
             <Scene
               tabs={true}
               hideNavBar
               key="forgottenPassword"
               component={ForgottenPassword}
-              type="replace"
             />
           </Scene>
           <Scene

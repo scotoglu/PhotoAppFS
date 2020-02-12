@@ -15,6 +15,8 @@ import Modal from 'react-native-modal';
 //Components
 import HeaderBar from '../../components/HeaderBar';
 import axios from 'axios';
+import Utilities from '../../constant/Utilities';
+import AppApi from '../../../Api';
 export default class ContactRequest extends Component {
   constructor() {
     super();
@@ -84,7 +86,7 @@ export default class ContactRequest extends Component {
   };
 
   sendUserRequest = () => {
-    let url = 'http://api.sinemkobaner.com/api/AddContactRequest';
+    let url = Utilities.BASE_URL + 'AddContactRequest';
     let formData = new FormData();
     formData.append('Name', this.state.name);
     formData.append('Email', this.state.mail);
@@ -317,11 +319,3 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
-
-// this.handleName = this.handleName.bind(this);
-// this.handlePhone = this.handlePhone.bind(this);
-// this.handleMail = this.handleMail.bind(this);
-// this.handleSubject = this.handleSubject.bind(this);
-// this.handleMessage = this.handleMessage.bind(this);
-// this.onButtonPress = this.onButtonPress.bind(this);
-// this.sendUserRequest = this.sendUserRequest.bind(this);

@@ -14,6 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Actions} from 'react-native-router-flux';
 import NetInfo from '@react-native-community/netinfo';
+import SplashScreen from 'react-native-splash-screen';
 
 //Components
 import Headerbar from '../../components/HeaderBar';
@@ -26,7 +27,9 @@ export default class Home extends Component {
     super(props);
     this.getNetworkState();
   }
-
+  componentDidMount() {
+    SplashScreen.hide();
+  }
   getNetworkState = () => {
     NetInfo.fetch().then(state => {
       console.log('Connection type', state.type);
@@ -106,11 +109,6 @@ export default class Home extends Component {
               </View>
             </View>
             <View style={styles.ButtonsView}>
-              <TouchableOpacity
-                style={{padding: 10}}
-                onPress={() => Actions.login()}>
-                <Text style={styles.enterButtonText}>Giriş</Text>
-              </TouchableOpacity>
               <TouchableOpacity
                 style={{padding: 10}}
                 onPress={() => Actions.appointment()}>
