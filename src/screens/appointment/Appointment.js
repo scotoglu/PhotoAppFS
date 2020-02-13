@@ -166,8 +166,6 @@ export default class Appointment extends Component {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
   sendUserRequest = () => {
-    console.log('SendUserRequest...');
-
     let url = Utilities.BASE_URL + 'AddAppointmentRequest';
     const formData = new FormData();
     formData.append('Name', this.state.name);
@@ -176,9 +174,9 @@ export default class Appointment extends Component {
     formData.append('Message', this.state.message);
     formData.append('ScheduleId', this.state.avaliableTimeID);
     formData.append('ShootTypeId', this.state.selectedPhotoTypeID);
-    console.log(formData);
 
     this.setModalVisibility();
+
     axios
       .post(url, formData, {
         headers: {

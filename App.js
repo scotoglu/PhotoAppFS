@@ -23,6 +23,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 Icon.loadFont();
 
 class App extends Component {
+  componentDidMount() {
+    console.log('App Started...');
+  }
   render() {
     const scenes = Actions.create(
       <Stack key="root" hideNavBar>
@@ -64,7 +67,7 @@ class App extends Component {
             icon={({tintColor}) => (
               <Icon name="user" color={tintColor} size={24} />
             )}>
-            <Scene tabs={true} hideNavBar key="login" component={Login} clone />
+            <Scene tabs={true} hideNavBar key="login" component={Login} />
             <Scene
               tabs={true}
               hideNavBar

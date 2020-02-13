@@ -98,7 +98,7 @@ export default class ContactRequest extends Component {
       .post(url, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: 'Bearer ' + this.state.userToken.toString(),
+          // Authorization: 'Bearer ' + this.state.userToken.toString(),
         },
       })
       .then(res => {
