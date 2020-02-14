@@ -16,7 +16,6 @@ import Modal from 'react-native-modal';
 import HeaderBar from '../../components/HeaderBar';
 import axios from 'axios';
 import Utilities from '../../constant/Utilities';
-import AppApi from '../../../Api';
 export default class ContactRequest extends Component {
   constructor() {
     super();

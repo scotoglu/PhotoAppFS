@@ -96,7 +96,7 @@ export default class AppointmentList extends Component {
 
     try {
       await AsyncStorage.removeItem('jwt_token');
-      Actions.login();
+      Actions.popTo('login');
     } catch (error) {}
   };
 

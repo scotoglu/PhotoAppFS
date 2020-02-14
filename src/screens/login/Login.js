@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Actions} from 'react-native-router-flux';
 import axios from 'axios';
 import Color from '../../constant/Color';
+import getToken from '../api/getToken';
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +30,13 @@ export default class Login extends Component {
   }
   componentDidMount() {
     console.log('Login Screen');
-    this.userAlreadyLogin();
+    const token = getToken();
+    if (token) {
+      console.log('Login token is not null.');
+      this.userAlreadyLogin();
+    } else {
+      console.log('Login token null.');
+    }
   }
   handleUserMail = text => {
     if (text != '') {
@@ -86,11 +93,8 @@ export default class Login extends Component {
   };
   //checks if user already login
   userAlreadyLogin = async () => {
-    const userToken = await AsyncStorage.getItem('jwt_token');
-    if (userToken === null) {
-    } else {
-      Actions.appointmentList();
-    }
+    console.log('userAlreadyLogin Active...');
+    Actions.appointmentList();
   };
 
   login = async () => {

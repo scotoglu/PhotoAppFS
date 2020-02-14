@@ -20,11 +20,13 @@ import AppointmentList from './src/components/AppointmentList';
 //Packages
 import {Router, Stack, Tabs, Scene, Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import getToken from './src/screens/api/getToken';
 Icon.loadFont();
 
 class App extends Component {
   componentDidMount() {
     console.log('App Started...');
+    getToken();
   }
   render() {
     const scenes = Actions.create(
