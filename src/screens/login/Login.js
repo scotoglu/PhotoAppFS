@@ -94,7 +94,12 @@ export default class Login extends Component {
   //checks if user already login
   userAlreadyLogin = async () => {
     console.log('userAlreadyLogin Active...');
-    Actions.appointmentList();
+    const userToken = getToken();
+    if (userToken != null) {
+      Actions.appointmentList();
+    } else {
+      console.log('Token is null in UserAlreadyLogin');
+    }
   };
 
   login = async () => {
@@ -120,7 +125,7 @@ export default class Login extends Component {
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#rgba(0, 0, 0 ,0.6 )',
+              backgroundColor: '#rgba(0, 0, 0 ,0.6 )', //set transparent background
             }}>
             <ActivityIndicator size="large" color="black" />
           </View>

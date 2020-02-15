@@ -1,5 +1,7 @@
 import {AsyncStorage} from 'react-native';
-
+/*
+WHEN APP STARTED FETCHS IF TOKEN EXİST,TO AVOID LATENCY
+*/
 async function getToken() {
   try {
     const token = await AsyncStorage.getItem('jwt_token');
