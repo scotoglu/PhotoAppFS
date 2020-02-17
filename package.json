@@ -13,6 +13,7 @@
     "@react-native-community/netinfo": "^5.3.3",
     "@react-native-community/viewpager": "^3.3.0",
     "axios": "^0.19.2",
+    "formik": "^2.1.4",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-datepicker": "^1.7.2",
@@ -25,7 +26,8 @@
     "react-native-router-flux": "^4.2.0",
     "react-native-splash-screen": "^3.2.0",
     "react-native-swiper": "^1.5.14",
-    "react-native-vector-icons": "^6.6.0"
+    "react-native-vector-icons": "^6.6.0",
+    "yup": "^0.28.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

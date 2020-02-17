@@ -12,6 +12,8 @@ import Home from './src/screens/home/Home';
 import Login from './src/screens/login/Login';
 import Appointment from './src/screens/appointment/Appointment';
 import ContactRequest from './src/screens/contactRequest/ContactRequest';
+import _ContactRequest from './src/screens/contactRequest/_ContactRequest';
+
 import Works from './src/screens/works/Work';
 import Profile from './src/screens/Account/Profile';
 import ForgottenPassword from './src/screens/login/ForgottenPassword';
@@ -48,7 +50,7 @@ class App extends Component {
             tabs={true}
             hideNavBar
             key="contact"
-            component={ContactRequest}
+            component={_ContactRequest}
             tabBarLabel="İletişim"
             icon={({tintColor}) => (
               <Icon name="calendar" color={tintColor} size={24} />
