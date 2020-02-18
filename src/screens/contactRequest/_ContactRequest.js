@@ -21,6 +21,7 @@ import InputText from '../../components/InputsText';
 
 //Constants
 import Utilities from '../../constant/Utilities';
+import CustomModal from '../../components/CustomModal';
 export default class _ContactRequest extends Component {
   constructor() {
     super();
@@ -105,23 +106,10 @@ export default class _ContactRequest extends Component {
           height: height,
           width: width,
         }}>
-        <Modal
-          style={{
-            flex: 1,
-            margin: 0,
-          }}
+        <CustomModal
           visible={this.state.isModalVisible}
-          onRequestClose={() => console.log('Close Pressed...')}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: '#rgba(0, 0, 0 ,0.6 )', //sets transparent black background of modal
-            }}>
-            <ActivityIndicator size="large" color="black" />
-          </View>
-        </Modal>
+          loadingText="Talebiniz Gönderiliyor..."
+        />
         <ScrollView contentContainerStyle={{justifyContent: 'flex-end'}}>
           <HeaderBar />
           <View style={styles.container}>

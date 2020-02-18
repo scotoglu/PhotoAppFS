@@ -25,6 +25,7 @@ import AppointmentList from './src/components/AppointmentList';
 import {Router, Stack, Tabs, Scene, Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import getToken from './src/screens/api/getToken';
+import checkAuth from './src/screens/api/checkAuth';
 Icon.loadFont();
 
 class App extends Component {

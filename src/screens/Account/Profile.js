@@ -107,7 +107,7 @@ export default class Profile extends Component {
 
   signOut = async () => {
     try {
-      await AsyncStorage.removeItem('jwt_token');
+      await AsyncStorage.removeItem('validToken');
       Actions.login();
     } catch (error) {}
   };
@@ -129,7 +129,7 @@ export default class Profile extends Component {
           </View>
         </View>
         <View style={styles.ImageDisplayContainer}>
-          {/**Modal */}
+          {/**Modal for image slide */}
           <Modal
             coverScreen={true}
             isVisible={this.state.modalVisible}

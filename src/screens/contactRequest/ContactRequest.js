@@ -31,7 +31,7 @@ export default class ContactRequest extends Component {
   }
   async componentDidMount() {
     try {
-      const token = await AsyncStorage.getItem('jwt_token');
+      const token = await AsyncStorage.getItem('validToken');
       console.log('Token...', token);
       this.setState({
         userToken: token,

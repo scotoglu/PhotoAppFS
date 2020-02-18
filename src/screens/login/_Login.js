@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Dimensions,
   AsyncStorage,
+  Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {Formik} from 'formik';
@@ -20,6 +21,9 @@ import axios from 'axios';
 //Constants
 import Color from '../../constant/Color';
 import Utilities from '../../constant/Utilities';
+import CustomModal from '../../components/CustomModal';
+import {Actions} from 'react-native-router-flux';
+import getToken from '../api/getToken';
 
 export default class _Login extends Component {
   constructor() {
@@ -27,7 +31,9 @@ export default class _Login extends Component {
     this.state = {
       isModalVisible: false,
     };
+    this.userAlreadyLogin();
   }
+  componentDidMount() {}
   setModalVisibility = () => {
     this.setState({
       isModalVisible: !this.state.isModalVisible,
@@ -36,7 +42,7 @@ export default class _Login extends Component {
   setToken = async token => {
     try {
       if (token) {
-        await AsyncStorage.setItem('jwt_token');
+        await AsyncStorage.setItem('validToken', token);
       } else {
         console.log('Token is null..');
       }
@@ -58,11 +64,13 @@ export default class _Login extends Component {
           this.setModalVisibility();
           console.log('Response in Login...', res.data.token);
           this.setToken(res.data.token);
+          Actions.replace('appointmentList');
         }
       })
       .catch(err => {
         this.setModalVisibility();
         console.log('Error in login..', err.response);
+        Alert.alert('Hata!!!', 'Yanlış Mail ya da Şifre!', [{text: 'Tamam'}]);
       });
   };
   validation = () => {
@@ -77,26 +85,24 @@ export default class _Login extends Component {
     });
     return validationSchema;
   };
+  userAlreadyLogin = async () => {
+    try {
+      const token = getToken();
+      console.log('Token is...', token);
+      if (token != null) {
+        Actions.replace('appointmentList');
+      } else {
+        console.log('Token is null...');
+      }
+    } catch (error) {}
+  };
   render() {
     return (
       <KeyboardAvoidingView style={styles.Container} enabled>
-        <Modal
-          style={{
-            flex: 1,
-            margin: 0,
-          }}
+        <CustomModal
           visible={this.state.isModalVisible}
-          onRequestClose={() => console.log('Close Pressed...')}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: '#rgba(0, 0, 0 ,0.6 )', //set transparent background
-            }}>
-            <ActivityIndicator size="large" color="black" />
-          </View>
-        </Modal>
+          loadingText="Giriş Yapılıyor..."
+        />
         <View style={styles.logoContainer}>
           <Image
             source={require('../../assets/logo/logov3.jpg')}
@@ -131,7 +137,6 @@ export default class _Login extends Component {
                 autoCapitalize={false}
                 secureTextEntry
               />
-
               <Button
                 title="Giriş"
                 type={'clear'}

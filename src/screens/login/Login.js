@@ -81,7 +81,7 @@ export default class Login extends Component {
     console.log('SetToken Active...');
 
     try {
-      await AsyncStorage.setItem('jwt_token', token);
+      await AsyncStorage.setItem('validToken', token);
     } catch (error) {
       console.log(error);
     }

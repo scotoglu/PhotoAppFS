@@ -45,7 +45,7 @@ export default class Appointment extends Component {
   }
   async componentDidMount() {
     try {
-      const token = await AsyncStorage.getItem('jwt_token');
+      const token = await AsyncStorage.getItem('validToken');
       this.setState({
         userToken: token,
       });

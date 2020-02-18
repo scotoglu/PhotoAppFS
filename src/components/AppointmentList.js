@@ -1,26 +1,23 @@
 import React, {Component} from 'react';
 import {
   Text,
-  StyleSheet,
   View,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
   Alert,
   AsyncStorage,
-  Image,
+  StyleSheet,
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import Modal from 'react-native-modal';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 //components
 import CardAppointment from '../components/AppointmentCard';
 import HeaderBar from './HeaderBar';
 //Constants
 import Color from '../constant/Color';
 import Utilies from '../constant/Utilities';
+import CustomModal from './CustomModal';
 
 export default class AppointmentList extends Component {
   constructor(props) {
@@ -60,17 +57,16 @@ export default class AppointmentList extends Component {
 
     this.setModalVisibility();
     try {
-      const token = await AsyncStorage.getItem('jwt_token');
-      console.log('Token', token);
+      const token = await AsyncStorage.getItem('validToken');
       this.setState({
         userToken: token,
       });
     } catch (error) {
       console.log(error);
     }
-    let url = Utilies.BASE_URL + 'GetAppointments';
+
     axios
-      .get(url, {
+      .get(Utilies.GETAPPOINTMENTS, {
         headers: {
           Authorization: 'Bearer ' + this.state.userToken,
         },
@@ -86,7 +82,7 @@ export default class AppointmentList extends Component {
         this.setModalVisibility();
       })
       .catch(err => {
-        console.log('E......', err.response);
+        console.log('Error in getAppointment...', err.response);
         this.setModalVisibility();
       });
   };
@@ -95,7 +91,7 @@ export default class AppointmentList extends Component {
     console.log('Clicked....');
 
     try {
-      await AsyncStorage.removeItem('jwt_token');
+      await AsyncStorage.removeItem('validToken');
       Actions.popTo('login');
     } catch (error) {}
   };
@@ -104,52 +100,15 @@ export default class AppointmentList extends Component {
     return (
       <>
         <HeaderBar />
-        <View
-          style={{
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderBottomWidth: 2,
-              borderTopWidth: 2,
-              borderColor: Color.BORDER,
-              marginTop: 2,
-              marginBottom: 5,
-            }}>
-            <Text style={{fontSize: 20, fontWeight: '900', color: Color.TEXT}}>
-              Randevular
-            </Text>
+        <View style={style.container}>
+          <View style={style.mainView}>
+            <Text style={style.randevuText}>Randevular</Text>
             <TouchableOpacity style={{marginLeft: 20}} onPress={this.signOut}>
               <Icon name="times-circle" size={25}></Icon>
             </TouchableOpacity>
           </View>
-          <Modal
-            style={{margin: 0}}
-            visible={this.state.isVisible}
-            onRequestClose={() => console.log('Close Request...')}
-            onBackButtonPress={() => {
-              this.setModalVisibility();
-            }}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#rgba(0, 0, 0 ,0.6 )',
-              }}>
-              <ActivityIndicator size="large" color="black" />
-            </View>
-          </Modal>
-          <ScrollView
-            contentContainerStyle={{
-              justifyContent: 'center',
-              marginHorizontal: 15,
-            }}>
+          <CustomModal visible={this.state.isVisible} />
+          <ScrollView contentContainerStyle={style.scrollContent}>
             {this.state.appointments.length <= 0
               ? this.emptyAppointmentsList()
               : this.state.appointments.map((item, i) => (
@@ -177,8 +136,18 @@ export default class AppointmentList extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  itemStyle: {
-    marginHorizontal: 7,
+const style = StyleSheet.create({
+  container: {width: '100%', height: '100%', justifyContent: 'center'},
+  mainView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderTopWidth: 2,
+    borderColor: Color.BORDER,
+    marginTop: 2,
+    marginBottom: 5,
   },
+  randevuText: {fontSize: 20, fontWeight: '900', color: Color.TEXT},
+  scrollContent: {justifyContent: 'center', marginHorizontal: 15},
 });
