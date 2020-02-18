@@ -12,10 +12,14 @@ import {
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import Modal from 'react-native-modal';
-import HeaderBar from '../../components/HeaderBar';
-import InputText from '../../components/InputsText';
 import {Button} from 'react-native-elements';
 import axios from 'axios';
+
+//Components
+import HeaderBar from '../../components/HeaderBar';
+import InputText from '../../components/InputsText';
+
+//Constants
 import Utilities from '../../constant/Utilities';
 export default class _ContactRequest extends Component {
   constructor() {
@@ -59,12 +63,15 @@ export default class _ContactRequest extends Component {
   sendContactRequest = values => {
     this.setModalVisibility();
 
+    /*Values not proper format for sending request,
+    converts json to form data with FormData.*/
     let formData = new FormData();
     for (let key in values) {
       formData.append(key, values[key]);
     }
     console.log('FormData...', formData);
 
+    /**Sending post request */
     axios
       .post(Utilities.CONTACT_REQUEST, formData, {
         headers: {

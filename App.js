@@ -10,7 +10,9 @@ console.disableYellowBox = true;
 //Copmponents
 import Home from './src/screens/home/Home';
 import Login from './src/screens/login/Login';
+import _Login from './src/screens/login/_Login';
 import Appointment from './src/screens/appointment/Appointment';
+import _Appointment from './src/screens/appointment/_Appointment';
 import ContactRequest from './src/screens/contactRequest/ContactRequest';
 import _ContactRequest from './src/screens/contactRequest/_ContactRequest';
 
@@ -71,7 +73,7 @@ class App extends Component {
             icon={({tintColor}) => (
               <Icon name="user" color={tintColor} size={24} />
             )}>
-            <Scene tabs={true} hideNavBar key="login" component={Login} />
+            <Scene tabs={true} hideNavBar key="login" component={_Login} />
             <Scene
               tabs={true}
               hideNavBar
