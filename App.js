@@ -63,7 +63,7 @@ class App extends Component {
             tabs={true}
             hideNavBar
             key="appointment"
-            component={Appointment}
+            component={_Appointment}
             tabBarLabel="Randevu"
             icon={({tintColor}) => (
               <Icon name="phone-square" color={tintColor} size={24} />

@@ -11,17 +11,16 @@ import {
 } from 'react-native';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import Modal from 'react-native-modal';
 import {Button} from 'react-native-elements';
 import axios from 'axios';
 
 //Components
 import HeaderBar from '../../components/HeaderBar';
 import InputText from '../../components/InputsText';
-
 //Constants
 import Utilities from '../../constant/Utilities';
 import CustomModal from '../../components/CustomModal';
+import Color from '../../constant/Color';
 export default class _ContactRequest extends Component {
   constructor() {
     super();
@@ -182,7 +181,8 @@ export default class _ContactRequest extends Component {
                     />
                     <Button
                       title="Gönder"
-                      style={styles.buttonStyle}
+                      containerStyle={styles.loginButton}
+                      titleStyle={{color: '#1e272e'}}
                       onPress={formikProps.handleSubmit}
                     />
                   </>
@@ -216,5 +216,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textAlign: 'center',
     fontSize: 20,
+  },
+  loginButton: {
+    marginTop: 10,
+    width: '50%',
+    borderWidth: 2,
+    borderColor: Color.BORDER,
+    opacity: 0.7,
   },
 });
