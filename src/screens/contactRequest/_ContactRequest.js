@@ -131,8 +131,16 @@ export default class _ContactRequest extends Component {
                   subject: '',
                   message: '',
                 }}
-                onSubmit={values => {
+                onSubmit={(values, actions) => {
                   this.sendContactRequest(values);
+                  actions.resetForm({
+                    //after the submit reset fields
+                    name: '',
+                    phone: '',
+                    email: '',
+                    subject: '',
+                    message: '',
+                  });
                 }}
                 validationSchema={this.validation()}>
                 {formikProps => (

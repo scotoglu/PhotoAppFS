@@ -12,6 +12,7 @@ import {Text} from 'react-native-elements';
 import axios from 'axios';
 import {Formik} from 'formik';
 import {Button} from 'react-native-elements';
+import * as Yup from 'yup';
 //Components
 import HeaderBar from '../../components/HeaderBar';
 //Constants
@@ -21,6 +22,7 @@ import Utilities from '../../constant/Utilities';
 import InputText from '../../components/InputsText';
 import CustomDropDown from '../../components/CustomDropdown';
 import CustomDatePicker from '../../components/CustomDatePicker';
+import CustomModal from '../../components/CustomModal';
 
 export default class Appointment extends Component {
   constructor(props) {
@@ -28,38 +30,34 @@ export default class Appointment extends Component {
     this.state = {
       isModalVisible: false,
       photoTypes: [],
-      photoType: '',
+      photoType: '', //for clearing dropdown after submit
       selectedPhotoTypeID: '',
       date: '',
+      avaliableTimes: [],
+      avaliableTimeID: '',
+      availableTime: '', //for clearing dropdown after submit
     };
   }
   componentDidMount() {
     this.getPhotoTypes();
-    console.log('SSSS', this.state.photoTypes);
   }
-  getSelectedDate = (event, date) => {
-    // this.setState({date: text});
-    // if (this.state.photoType != '' && this.state.date != '') {
-    //   this.getAvaliableTimes();
-    // } else {
-    //   Alert.alert(
-    //     'Uyarı',
-    //     'Çekim Türü ve Çekim Tarihi alanlarını boş bırakmayınız.',
-    //     [{text: 'Tamam'}],
-    //   );
-    // }
-    console.log('GetDate Active...');
+  getSelectedDate = text => {
+    this.setState({date: text});
+    if (this.state.photoType != '' && this.state.date != '') {
+      this.getAvaliableTimes();
+    } else {
+      Alert.alert(
+        'Uyarı',
+        'Çekim Türü ve Çekim Tarihi alanlarını boş bırakmayınız.',
+        [{text: 'Tamam'}],
+      );
+    }
   };
-  handleTime = (text, index, data) => {
-    let startH = text.split('-')[0];
-    let endH = text.split('-')[1];
+  getSelectedTime = (text, index, data) => {
+    console.log('getSelectedTime active..');
     let id = data[index].id;
-
     this.setState({
-      time: text,
       avaliableTimeID: id,
-      startHour: startH,
-      endHour: endH,
     });
   };
   getSelectedItem = (text, index, data) => {
@@ -70,17 +68,14 @@ export default class Appointment extends Component {
     });
   };
   getAvaliableTimes = () => {
-    let url = Utilities.BASE_URL + 'GetAvailableAppointmentDates';
+    console.log('getAvaliableTimes active');
+    console.log('Date: ', this.state.date);
 
-    //send get request
     axios
-      .get(url, {
+      .get(Utilities.GETAVAILABLETIMES, {
         params: {
           start: this.state.date,
           photoShootType: this.state.selectedPhotoTypeID,
-        },
-        headers: {
-          Authorization: 'Bearer ' + this.state.userToken,
         },
       })
       .then(res => {
@@ -107,32 +102,11 @@ export default class Appointment extends Component {
         console.log('Get Availablel Times...', err.response);
       });
   };
-  onButtonPress = () => {
-    this.setEmpty();
-    if (
-      this.state.name != '' &&
-      this.state.phone != '' &&
-      this.state.photoType != '' &&
-      this.state.date != '' &&
-      this.state.time != '' &&
-      this.state.mail != '' &&
-      this.state.message != ''
-    ) {
-      this.sendUserRequest();
-    } else {
-      Alert.alert('Randevu Talebi', 'Tüm alanlar eksiksiz doldurulmalıdır.', [
-        {text: 'Tamam'},
-      ]);
-    }
-  };
   setEmpty = () => {
     //clear the textinput after the axios success
-    this.textInputName.clear();
-    this.textInputPhone.clear();
-    this.textInputMail.clear();
-    this.textInputMessage.clear();
+
     this.setState({
-      time: '',
+      availableTime: '',
       photoType: '',
       date: '',
     });
@@ -140,23 +114,21 @@ export default class Appointment extends Component {
   setModalVisibility = () => {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
-  sendUserRequest = () => {
-    let url = Utilities.BASE_URL + 'AddAppointmentRequest';
-    const formData = new FormData();
-    formData.append('Name', this.state.name);
-    formData.append('Phone', this.state.phone);
-    formData.append('Email', this.state.mail);
-    formData.append('Message', this.state.message);
+  sendUserRequest = values => {
+    let formData = new FormData();
+    formData.append('Name', values.name);
+    formData.append('Phone', values.phone);
+    formData.append('Email', values.email);
+    formData.append('Message', values.message);
     formData.append('ScheduleId', this.state.avaliableTimeID);
     formData.append('ShootTypeId', this.state.selectedPhotoTypeID);
+    console.log('FormData: ', formData);
 
     this.setModalVisibility();
-
     axios
-      .post(url, formData, {
+      .post(Utilities.APPOINTMET_REQUEST, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: 'Bearer ' + this.state.userToken,
         },
       })
       .then(res => {
@@ -166,20 +138,20 @@ export default class Appointment extends Component {
             'Randevu Talebiniz Alınmıştır.Randevunuz Onaylanınca Tarafınıza Mail Gelicektir',
             [{text: 'Tamam'}],
           );
-          this.setModalVisibility();
           this.setEmpty();
+          this.setModalVisibility();
         }
       })
       .catch(err => {
+        this.setModalVisibility();
         console.log('Send User Request...', err.response);
         Alert.alert('Hata', 'Hata! Tekrar Deneyin...', [{text: 'Tamam'}]);
       });
   };
   getPhotoTypes = () => {
     axios
-      .get(Utilities.BASE_URL + 'GetPhotoShootTypes', {})
+      .get(Utilities.GET_PHOTO_SHOOT_TYPES)
       .then(res => {
-        console.log(res.data);
         let tmpTypes = [];
         for (let index = 0; index < res.data.length; index++) {
           tmpTypes.push({id: res.data[index].id, value: res.data[index].name});
@@ -187,19 +159,39 @@ export default class Appointment extends Component {
         this.setState({
           photoTypes: tmpTypes,
         });
-        console.log('Types..', tmpTypes);
       })
       .catch(err => {
         console.log(err.response);
       });
   };
-
+  validation = () => {
+    const validationSchema = Yup.object().shape({
+      name: Yup.string()
+        .label('name')
+        .required('*Zorunlu Alan'),
+      phone: Yup.string()
+        .label('phone')
+        .required('*Zorunlu Alan'),
+      email: Yup.string()
+        .email('Geçersiz Mail')
+        .label('email')
+        .required('*Zorunlu Alan'),
+      message: Yup.string()
+        .label('message')
+        .required('*Zorunlu Alan'),
+    });
+    return validationSchema;
+  };
   render() {
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
         enabled
         style={styles.container}>
+        <CustomModal
+          visible={this.state.isModalVisible}
+          loadingText="Talebiniz Gönderiliyor..."
+        />
         <ScrollView
           enabled
           contentContainerStyle={{justifyContent: 'flex-end'}}>
@@ -216,38 +208,59 @@ export default class Appointment extends Component {
                 aspectRatio: 1 / 1.3,
               }}>
               <Formik
+                enableReinitialize={true}
                 initialValues={{
                   name: '',
                   phone: '',
                   email: '',
                   message: '',
                   date: '',
+                  photoTypes: '',
+                  availableTimes: '',
                 }}
-                onSubmit={values => {
-                  // alert(JSON.stringify(values));
-                  alert('......');
+                validationSchema={this.validation()}
+                onSubmit={(values, actions) => {
+                  this.sendUserRequest(values);
+                  actions.resetForm({
+                    name: '',
+                    phone: '',
+                    email: '',
+                    message: '',
+                    date: '',
+                    photoTypes: '',
+                    availableTimes: '',
+                  });
+                }}
+                onReset={(initialValues, formikBag) => {
+                  console.log('onReset');
                 }}>
                 {formikProps => (
-                  <React.Fragment>
+                  <>
                     <InputText
+                      value={formikProps.values.name || ''}
                       iconName="user"
                       formikKey="name"
                       formikProps={formikProps}
                       placeholder="Adınız ve Soyadınız"
                     />
                     <InputText
+                      value={formikProps.values.phone || ''}
+                      keyboardType="numeric"
                       iconName="phone"
                       formikKey="phone"
                       formikProps={formikProps}
                       placeholder="Telefon Numaranız"
                     />
                     <InputText
+                      value={formikProps.values.email || ''}
                       iconName="at"
                       formikKey="email"
                       formikProps={formikProps}
                       placeholder="Mail Adresiniz"
+                      keyboardType="email-address"
                     />
                     <InputText
+                      value={formikProps.values.message || ''}
                       iconName="envelope"
                       formikKey="message"
                       formikProps={formikProps}
@@ -255,15 +268,30 @@ export default class Appointment extends Component {
                     />
 
                     <CustomDropDown
+                      value={this.state.photoType || ''}
                       formikProps={formikProps}
+                      formikKey="photoTypes"
                       placeholder="Çekim Türü"
                       data={this.state.photoTypes}
                       onChangeText={this.getSelectedItem}
                     />
-                    <CustomDatePicker />
+                    <CustomDatePicker
+                      placeholder="Tarih Seçin"
+                      date={this.state.date}
+                      formikProps={formikProps}
+                      formikKey="date"
+                      mode="date"
+                      onDateChange={this.getSelectedDate}
+                      date={this.state.date}
+                    />
                     <CustomDropDown
+                      value={this.state.availableTime || ''}
+                      formikProps={formikProps}
+                      formikKey="availableTimes"
                       placeholder="Uygun Saatler"
-                      // data={this.state.photoTypes}
+                      data={this.state.avaliableTimes}
+                      onChangeText={this.getSelectedTime}
+                      dropdownPosition={-2}
                     />
 
                     <Button
@@ -272,7 +300,7 @@ export default class Appointment extends Component {
                       titleStyle={{color: '#1e272e'}}
                       onPress={formikProps.handleSubmit}
                     />
-                  </React.Fragment>
+                  </>
                 )}
               </Formik>
             </View>

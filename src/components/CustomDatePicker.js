@@ -28,6 +28,7 @@ const styles = {
     },
     dateInput: {
       padding: 0,
+      paddingRight: 35,
       borderWidth: 0,
     },
     dateText: {
@@ -39,9 +40,7 @@ const styles = {
     },
   },
 };
-const getDate = date => {
-  return date;
-};
+
 const CustomDatePicker = ({placeholder, formikProps, formikKey, ...rest}) => {
   return (
     <View style={styles.datePickerView}>
@@ -58,8 +57,10 @@ const CustomDatePicker = ({placeholder, formikProps, formikKey, ...rest}) => {
         cancelBtnText="İptal"
         customStyles={styles.datepicker}
         onDateChange={date => {
-          getDate(date);
+          this.getSelectedDate(date);
+          formikProps.handleChange(formikKey);
         }}
+        {...rest}
       />
     </View>
   );
