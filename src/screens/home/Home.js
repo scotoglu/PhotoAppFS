@@ -15,27 +15,66 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Actions} from 'react-native-router-flux';
 import NetInfo from '@react-native-community/netinfo';
 import SplashScreen from 'react-native-splash-screen';
-
+import Axios from 'axios';
 //Components
 import Headerbar from '../../components/HeaderBar';
 import Map from '../../components/Map';
 import Category from '../../components/Category';
 import Color from '../../constant/Color';
-
+//Constants
+import Utilities from '../../constant/Utilities';
+import CustomAlert from '../../components/CustomAlert';
 export default class Home extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      photoShootTypes: [],
+      connected: false,
+    };
     this.getNetworkState();
   }
   componentDidMount() {
     SplashScreen.hide();
+    this.getPhotoShootTypes();
+    this.connectionChange();
   }
+  connectionChange = () => {
+    NetInfo.addEventListener(state => {
+      console.log('State Changed');
+      NetInfo.fetch().then(state => {
+        if (state.isConnected) {
+          this.getPhotoShootTypes();
+          this.setState({
+            connected: true,
+          });
+        }
+      });
+    });
+  };
+  getPhotoShootTypes = () => {
+    console.log('GetPhotoShootTypes Active...');
+
+    Axios.get(Utilities.GET_PHOTO_SHOOT_TYPES)
+      .then(res => {
+        let temp = res.data;
+        console.log('Response in Home: ', res.data);
+        this.setState({
+          photoShootTypes: temp,
+        });
+      })
+      .catch(err => {
+        console.log('Error in Home: ', err);
+      });
+  };
   getNetworkState = () => {
     NetInfo.fetch().then(state => {
       console.log('Connection type', state.type);
 
       if (state.isConnected) {
         //do nothing
+        this.setState({
+          connected: true,
+        });
         console.log('Device has network connection...');
       } else {
         Alert.alert(
@@ -60,38 +99,17 @@ export default class Home extends Component {
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => Actions.works({text: 'Aile'})}>
-                  <Category
-                    name="Aile"
-                    imageUrl={require('../../assets/home.jpg')}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => Actions.works({text: 'Anne-Yeni Doğan'})}>
-                  <Category
-                    name="Anne-Yeni Doğan"
-                    imageUrl={require('../../assets/experiences.jpg')}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={text => Actions.works({text: 'Çocuklar'})}>
-                  <Category
-                    name="Çocuklar"
-                    imageUrl={require('../../assets/restaurant.jpg')}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => Actions.works({text: 'Yeni Doğan'})}>
-                  <Category
-                    name="Yeni Doğan"
-                    imageUrl={require('../../assets/restaurant.jpg')}
-                  />
-                </TouchableOpacity>
+                {this.state.connected ? (
+                  this.state.photoShootTypes.map(types => (
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => Actions.works({text: 'Aile'})}>
+                      <Category name={types.name} imageUrl={types.photoPath} />
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <CustomAlert />
+                )}
               </ScrollView>
             </View>
             <View style={styles.mainPhotoContainer}>

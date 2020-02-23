@@ -6,7 +6,9 @@ export default class Category extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={this.props.imageUrl}></Image>
+          <Image
+            style={styles.image}
+            source={{uri: this.props.imageUrl}}></Image>
         </View>
         <View style={styles.bottomText}>
           <Text>{this.props.name}</Text>
