@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   View,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Image,
   TouchableOpacity,
@@ -11,7 +10,6 @@ import {
   AsyncStorage,
   Alert,
 } from 'react-native';
-import Modal from 'react-native-modal';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../components/InputsText';
@@ -53,6 +51,7 @@ export default class _Login extends Component {
   loginRequest = values => {
     this.setModalVisibility();
     let formData = new FormData();
+    // eslint-disable-next-line no-unused-vars
     for (let key in values) {
       formData.append(key, values[key]);
     }

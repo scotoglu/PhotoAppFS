@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import Color from '../constant/Color';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -28,7 +28,7 @@ const styles = {
     },
     dateInput: {
       padding: 0,
-      paddingRight: 35,
+      paddingRight: 10,
       borderWidth: 0,
     },
     dateText: {
@@ -39,18 +39,16 @@ const styles = {
       paddingLeft: 0,
     },
   },
+  iconStyle: {marginVertical: 10, marginRight: 10},
+  datePickerStyle: {width: '50%', padding: 0},
 };
 
 const CustomDatePicker = ({placeholder, formikProps, formikKey, ...rest}) => {
   return (
     <View style={styles.datePickerView}>
-      <Icon
-        name="calendar"
-        size={24}
-        style={{marginVertical: 10, marginRight: 10}}
-      />
+      <Icon name="calendar" size={24} style={styles.iconStyle} />
       <DatePicker
-        style={{width: '50%', padding: 0}}
+        style={styles.datePickerStyle}
         placeholder={placeholder}
         format="DD.MM.YYYY"
         confirmBtnText="Onayla"

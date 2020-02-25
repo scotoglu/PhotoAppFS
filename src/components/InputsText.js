@@ -35,8 +35,3 @@ const InputText = ({formikProps, formikKey, iconName, ...rest}) => {
   );
 };
 export default InputText;
-{
-  /* <Text style={{color: 'red'}}>
-        {formikProps.touched[formikKey] && formikProps.errors[formikKey]}
-      </Text> */
-}

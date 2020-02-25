@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   View,
-  ActivityIndicator,
   KeyboardAvoidingView,
   ScrollView,
   Dimensions,
@@ -96,15 +95,8 @@ export default class _ContactRequest extends Component {
       });
   };
   render() {
-    const {height, width} = Dimensions.get('window');
     return (
-      <KeyboardAvoidingView
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-          height: height,
-          width: width,
-        }}>
+      <KeyboardAvoidingView style={styles.topContainer}>
         <CustomModal
           visible={this.state.isModalVisible}
           loadingText="Talebiniz Gönderiliyor..."
@@ -115,14 +107,7 @@ export default class _ContactRequest extends Component {
             <Text h4 style={styles.title}>
               İletişim Talebi
             </Text>
-            <View
-              style={{
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                //backgroundColor: 'green',
-                aspectRatio: 1 / 1.3,
-              }}>
+            <View style={styles.formikView}>
               <Formik
                 initialValues={{
                   name: '',
@@ -185,19 +170,20 @@ export default class _ContactRequest extends Component {
                       autoCorrect={true}
                       multiline={true}
                       numberOfLines={3}
+                      // eslint-disable-next-line react/jsx-no-duplicate-props
                       autoCorrect={true}
                     />
                     <Button
                       title="Gönder"
                       containerStyle={styles.loginButton}
-                      titleStyle={{color: '#1e272e'}}
+                      titleStyle={styles.buttonTitleStyle}
                       onPress={formikProps.handleSubmit}
                     />
                   </>
                 )}
               </Formik>
-              <View style={{marginTop: 15}}>
-                <Text style={{fontStyle: 'italic', fontWeight: '500'}}>
+              <View style={styles.bottomTextView}>
+                <Text style={styles.bottomText}>
                   İletişim talebinize en kısa sürede cevap verilecektir
                 </Text>
               </View>
@@ -208,7 +194,14 @@ export default class _ContactRequest extends Component {
     );
   }
 }
+const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
+  topContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    height: height,
+    width: width,
+  },
   container: {
     paddingHorizontal: 20,
     marginTop: 10,
@@ -232,4 +225,16 @@ const styles = StyleSheet.create({
     borderColor: Color.BORDER,
     opacity: 0.7,
   },
+  formikView: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    aspectRatio: 1 / 1.3,
+  },
+  bottomTextView: {marginTop: 15},
+  bottomText: {
+    fontStyle: 'italic',
+    fontWeight: '500',
+  },
+  buttonTitleStyle: {color: '#1e272e'},
 });

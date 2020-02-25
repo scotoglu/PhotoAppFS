@@ -43,8 +43,8 @@ export default class Home extends Component {
   connectionChange = () => {
     NetInfo.addEventListener(state => {
       console.log('State Changed');
-      NetInfo.fetch().then(state => {
-        if (state.isConnected) {
+      NetInfo.fetch().then(stat => {
+        if (stat.isConnected) {
           this.getPhotoShootTypes();
           this.setState({
             connected: true,
@@ -141,25 +141,25 @@ export default class Home extends Component {
             </View>
             <View style={styles.contactContentView}>
               <View style={{flexDirection: 'row'}}>
-                <Icon name="map-marker" size={25}></Icon>
+                <Icon name="map-marker" size={25} />
                 <Text style={styles.contactContentAdressText}>
                   Güzelyalı, 25-1, Uğur Mumcu Blv., 01170 Çukurova/Adana
                 </Text>
               </View>
               <View style={{flexDirection: 'row', marginTop: 3}}>
-                <Icon name="phone" size={25}></Icon>
+                <Icon name="phone" size={25} />
                 <Text style={styles.contactContentPhoneText}>
                   +905065151290
                 </Text>
               </View>
               <View style={{flexDirection: 'row', marginTop: 3}}>
-                <Icon name="instagram" size={25}></Icon>
+                <Icon name="instagram" size={25} />
                 <Text style={styles.contactContentInstagramText}>
                   @dlsinemkobaner
                 </Text>
               </View>
               <View style={{flexDirection: 'row', marginTop: 3}}>
-                <Icon name="globe" size={25}></Icon>
+                <Icon name="globe" size={25} />
                 <Text style={styles.contactContentWebsiteText}>
                   www.sinemkobaner.com
                 </Text>
@@ -288,6 +288,3 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 });
-{
-  /* */
-}

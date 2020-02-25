@@ -99,7 +99,7 @@ export default class Profile extends Component {
   listEmpty = () => {
     return (
       <View style={styles.activityIndicatorView}>
-        <ActivityIndicator size="large" color="#95a5a6"></ActivityIndicator>
+        <ActivityIndicator size="large" color="#95a5a6" />
         <Text>Yükleniyor</Text>
       </View>
     );
@@ -120,7 +120,7 @@ export default class Profile extends Component {
             <View style={{flexDirection: 'row'}}>
               <Text style={styles.UserInfo}>Sayın {this.state.name}</Text>
               <TouchableOpacity style={styles.ExitIcon} onPress={this.signOut}>
-                <Icon name="times-circle" size={25}></Icon>
+                <Icon name="times-circle" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.WebAdress}>
@@ -170,7 +170,8 @@ export default class Profile extends Component {
                     <Image
                       resizeMethod="scale"
                       style={styles.flatListImage}
-                      source={{uri: item.path}}></Image>
+                      source={{uri: item.path}}
+                    />
                   </View>
                 </TouchableOpacity>
               )}

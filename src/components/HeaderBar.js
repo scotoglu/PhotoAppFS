@@ -12,7 +12,8 @@ class CustomHeader extends Component {
           height: 50,
           borderRadius: 5,
           marginVertical: 2,
-        }}></Image>
+        }}
+      />
     );
   }
 }

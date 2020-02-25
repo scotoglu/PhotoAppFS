@@ -79,7 +79,7 @@ export default class Samples extends Component {
         </View>
         {this.state.samples.length <= 0 ? (
           <View style={styles.loadingConatainer}>
-            <ActivityIndicator size="large" color="#95a5a6"></ActivityIndicator>
+            <ActivityIndicator size="large" color="#95a5a6" />
           </View>
         ) : (
           <View style={styles.SwiperContainer}>

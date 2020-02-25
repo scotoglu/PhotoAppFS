@@ -43,7 +43,7 @@ export default class Appointment extends Component {
   }
   getSelectedDate = text => {
     this.setState({date: text});
-    if (this.state.photoType != '' && this.state.date != '') {
+    if (this.state.photoType !== '' && this.state.date !== '') {
       this.getAvaliableTimes();
     } else {
       Alert.alert(
@@ -68,9 +68,7 @@ export default class Appointment extends Component {
     });
   };
   getAvaliableTimes = () => {
-    console.log('getAvaliableTimes active');
-    console.log('Date: ', this.state.date);
-
+    this.setModalVisibility();
     axios
       .get(Utilities.GETAVAILABLETIMES, {
         params: {
@@ -97,9 +95,11 @@ export default class Appointment extends Component {
         this.setState({
           avaliableTimes: tmpData,
         });
+        this.setModalVisibility();
       })
       .catch(err => {
         console.log('Get Availablel Times...', err.response);
+        this.setModalVisibility();
       });
   };
   setEmpty = () => {
@@ -190,23 +190,17 @@ export default class Appointment extends Component {
         style={styles.container}>
         <CustomModal
           visible={this.state.isModalVisible}
-          loadingText="Talebiniz Gönderiliyor..."
+          // loadingText="Talebiniz Gönderiliyor..."
         />
         <ScrollView
           enabled
-          contentContainerStyle={{justifyContent: 'flex-end'}}>
+          contentContainerStyle={styles.scrollContentContainer}>
           <HeaderBar />
           <View style={styles.componentContainer}>
             <Text h4 style={styles.title}>
               Randevu Talebi
             </Text>
-            <View
-              style={{
-                width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                aspectRatio: 1 / 1.3,
-              }}>
+            <View style={styles.FormikView}>
               <Formik
                 enableReinitialize={true}
                 initialValues={{
@@ -230,9 +224,6 @@ export default class Appointment extends Component {
                     photoTypes: '',
                     availableTimes: '',
                   });
-                }}
-                onReset={(initialValues, formikBag) => {
-                  console.log('onReset');
                 }}>
                 {formikProps => (
                   <>
@@ -282,7 +273,7 @@ export default class Appointment extends Component {
                       formikKey="date"
                       mode="date"
                       onDateChange={this.getSelectedDate}
-                      date={this.state.date}
+                      // date={this.state.date}
                     />
                     <CustomDropDown
                       value={this.state.availableTime || ''}
@@ -297,7 +288,7 @@ export default class Appointment extends Component {
                     <Button
                       title="Gönder"
                       containerStyle={styles.loginButton}
-                      titleStyle={{color: '#1e272e'}}
+                      titleStyle={styles.buttonTitleStyle}
                       onPress={formikProps.handleSubmit}
                     />
                   </>
@@ -331,5 +322,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Color.BORDER,
     opacity: 0.7,
+  },
+  FormikView: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    aspectRatio: 1 / 1.3,
+  },
+  buttonTitleStyle: {
+    color: '#1e272e',
+  },
+  scrollContentContainer: {
+    justifyContent: 'flex-end',
   },
 });

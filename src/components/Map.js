@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View, Dimensions} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 export default class Maps extends Component {
   constructor() {
@@ -13,28 +13,32 @@ export default class Maps extends Component {
   }
 
   render() {
-    const {width, height} = Dimensions.get('screen');
     return (
       <View style={styles.Maps}>
         <MapView
           pitchEnabled={false}
           scrollEnabled={false}
           zoomEnabled={false}
-          style={{height: 200, width: width - 54}}
+          style={styles.mapView}
           initialRegion={{
             latitude: 37.0526809,
             longitude: 35.2977791,
             latitudeDelta: 0.02, //0'a yaklaştıkça zoom artar.
             longitudeDelta: 0.02,
           }}>
-          <Marker coordinate={this.state.latLng}></Marker>
+          <Marker coordinate={this.state.latLng} />
         </MapView>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({});
+const {width} = Dimensions.get('screen');
+const styles = StyleSheet.create({
+  mapView: {
+    height: 200,
+    width: width - 54,
+  },
+});
 /**
  * pitchEnabled={false} camera angle
  * scrollEnabled={false} regions
