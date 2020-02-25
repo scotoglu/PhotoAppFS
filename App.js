@@ -15,7 +15,6 @@ import Appointment from './src/screens/appointment/Appointment';
 import _Appointment from './src/screens/appointment/_Appointment';
 import ContactRequest from './src/screens/contactRequest/ContactRequest';
 import _ContactRequest from './src/screens/contactRequest/_ContactRequest';
-
 import Works from './src/screens/works/Work';
 import Profile from './src/screens/Account/Profile';
 import ForgottenPassword from './src/screens/login/ForgottenPassword';
@@ -25,7 +24,6 @@ import AppointmentList from './src/components/AppointmentList';
 import {Router, Stack, Tabs, Scene, Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import getToken from './src/screens/api/getToken';
-import checkAuth from './src/screens/api/checkAuth';
 Icon.loadFont();
 
 class App extends Component {
@@ -39,14 +37,13 @@ class App extends Component {
         <Tabs showLabel={true} swipeEnabled={true}>
           <Scene
             initial
-            key="home"
             tabBarLabel="Anasayfa"
-            component={Home}
             hideNavBar
             icon={({tintColor}) => (
               <Icon name="home" color={tintColor} size={24} />
             )}>
-            <Scene tabs={true} hideNavBar key="works" component={Works} />
+            <Scene key="home" component={Home} />
+            <Scene hideNavBar key="works" component={Works} />
           </Scene>
 
           <Scene

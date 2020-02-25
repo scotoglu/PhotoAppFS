@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-const CustomAlert = () => {
+const CustomAlert = ({text}) => {
   return (
     <View
       style={{
@@ -11,9 +11,7 @@ const CustomAlert = () => {
         marginHorizontal: 50,
       }}>
       <Icon name="exclamation-circle" size={80} />
-      <Text style={{fontSize: 20, textAlign: 'center'}}>
-        İnternet Bağlantısı Yok
-      </Text>
+      <Text style={{fontSize: 20, textAlign: 'center'}}>{text}</Text>
     </View>
   );
 };

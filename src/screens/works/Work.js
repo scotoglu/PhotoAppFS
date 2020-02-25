@@ -1,92 +1,75 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, ActivityIndicator, Image, Text} from 'react-native';
 import Swiper from 'react-native-swiper';
+import Axios from 'axios';
+import {Dropdown} from 'react-native-material-dropdown';
 //Components
 import HeaderBar from '../../components/HeaderBar';
 //Constant
 import Images from '../../constant/Images';
-import {Dropdown} from 'react-native-material-dropdown';
+import Utilities from '../../constant/Utilities';
 export default class Samples extends Component {
   constructor(props) {
     super(props);
     this.state = {
       samples: [],
       sampleType: '',
+      photoShootTypes: [],
     };
-
-    // this.createDatas = this.createDatas.bind(this);
-    this.whichImagesSample = this.whichImagesSample.bind(this);
+    this.getPhotoShootTypes();
   }
   componentDidMount() {
-    this.whichImagesSample();
-    console.log('Coming from home:  ', this.props.text);
-
-    // this.createDatas();
+    this.whichImagesSample(this.props.data);
   }
+  getPhotoShootTypes = () => {
+    Axios.get(Utilities.GET_PHOTO_SHOOT_TYPES)
+      .then(res => {
+        let tmp = [];
+        for (let index = 0; index < res.data.length; index++) {
+          tmp.push({value: res.data[index].name});
+        }
 
-  // createDatas = () => {
-  //   tempData = [];
-  //   for (let index = 0; index < 20; index++) {
-  //     tempData.push({
-  //       id: index,
-  //       value: require('../../../assets/1.jpg'),
-  //     });
-  //   }
-
-  //   this.setState({
-  //     samples: tempData,
-  //   });
-  // };
-
+        this.setState({
+          photoShootTypes: tmp,
+        });
+      })
+      .catch(err => {
+        console.log(err, 'in getPhottShootTypes');
+      });
+  };
   whichImagesSample = sampleType => {
     console.log('whichImageSample');
-    console.log(this.props.text);
+    console.log(this.props.data);
     switch (sampleType) {
       case 'Aile':
         this.setState({samples: Images.AILE});
-
         break;
       case 'Yeni Doğan':
         this.setState({samples: Images.YENIDOGAN});
-
         break;
-
-      case 'Çocuklar':
+      case 'Çocuk':
         this.setState({samples: Images.COCUKLAR});
         break;
-
-      case 'Anne-Yeni Doğan':
+      case 'Anne':
         this.setState({samples: Images.ANNEYENIDOGAN});
         break;
-
       default:
         this.setState({samples: Images.AILE});
         break;
     }
   };
   render() {
-    let dropdownData = [
-      {value: 'Aile'},
-      {value: 'Yeni Doğan'},
-      {value: 'Çocuklar'},
-      {value: 'Anne-Yeni Doğan'},
-    ];
     return (
       <View style={styles.container}>
         <HeaderBar />
 
-        <View
-          style={
-            ([styles.topTextView],
-            {
-              alignItems: 'center',
-            })
-          }>
+        <View style={styles.topTextView}>
           <Dropdown
+            value={this.props.data}
             dropdownOffset={{top: 12, left: 12}}
             dropdownPosition={-5.2}
             containerStyle={{width: '70%'}}
-            data={dropdownData}
+            data={this.state.photoShootTypes}
             placeholder={'Örnek Seçiniz'}
             style={{textAlign: 'center'}}
             onChangeText={value => {
@@ -95,24 +78,12 @@ export default class Samples extends Component {
           />
         </View>
         {this.state.samples.length <= 0 ? (
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '50%',
-              width: '100%',
-              marginTop: 30,
-            }}>
+          <View style={styles.loadingConatainer}>
             <ActivityIndicator size="large" color="#95a5a6"></ActivityIndicator>
           </View>
         ) : (
           <View style={styles.SwiperContainer}>
             <Swiper showsButtons={true} autoplay={true} style={styles.wrapper}>
-              {/*this.state.images.map()... buraya bastırılacak. 
-            <View>
-                <Image></Image>
-            </View
-              */}
               {this.state.samples.map(url => (
                 <View key={parseInt(url.id)} style={styles.swiperImagesView}>
                   <Image style={styles.swiperImages} source={url.value} />
@@ -130,7 +101,13 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
   },
-
+  loadingConatainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '50%',
+    width: '100%',
+    marginTop: 30,
+  },
   SwiperContainer: {
     flexDirection: 'row',
     height: '77%',
@@ -148,6 +125,7 @@ const styles = StyleSheet.create({
   },
   topTextView: {
     //padding: 5,
+    alignItems: 'center',
   },
   topText: {
     padding: 5,

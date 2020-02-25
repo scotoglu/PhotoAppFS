@@ -6,7 +6,7 @@
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
-      android:icon="@mipmap/logo_splash"
+      android:icon="@mipmap/logo_splash_foreground"
       android:roundIcon="@mipmap/logo_splash_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">

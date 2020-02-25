@@ -20,10 +20,12 @@ import Axios from 'axios';
 import Headerbar from '../../components/HeaderBar';
 import Map from '../../components/Map';
 import Category from '../../components/Category';
-import Color from '../../constant/Color';
+import Loading from '../../components/Loading';
+
 //Constants
 import Utilities from '../../constant/Utilities';
 import CustomAlert from '../../components/CustomAlert';
+import Color from '../../constant/Color';
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -52,12 +54,9 @@ export default class Home extends Component {
     });
   };
   getPhotoShootTypes = () => {
-    console.log('GetPhotoShootTypes Active...');
-
     Axios.get(Utilities.GET_PHOTO_SHOOT_TYPES)
       .then(res => {
         let temp = res.data;
-        console.log('Response in Home: ', res.data);
         this.setState({
           photoShootTypes: temp,
         });
@@ -68,14 +67,11 @@ export default class Home extends Component {
   };
   getNetworkState = () => {
     NetInfo.fetch().then(state => {
-      console.log('Connection type', state.type);
-
       if (state.isConnected) {
         //do nothing
         this.setState({
           connected: true,
         });
-        console.log('Device has network connection...');
       } else {
         Alert.alert(
           'İnternet Connection',
@@ -96,21 +92,28 @@ export default class Home extends Component {
               Sinem Kobaner Fotoğraf İşleri
             </Text>
             <View style={{height: 200, marginTop: 20}}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                {this.state.connected ? (
-                  this.state.photoShootTypes.map(types => (
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={() => Actions.works({text: 'Aile'})}>
-                      <Category name={types.name} imageUrl={types.photoPath} />
-                    </TouchableOpacity>
-                  ))
-                ) : (
-                  <CustomAlert />
-                )}
-              </ScrollView>
+              {this.state.connected ? (
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}>
+                  {this.state.photoShootTypes.length > 0 ? (
+                    this.state.photoShootTypes.map(types => (
+                      <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => Actions.works({data: types.name})}>
+                        <Category
+                          name={types.name}
+                          imageUrl={types.photoPath}
+                        />
+                      </TouchableOpacity>
+                    ))
+                  ) : (
+                    <Loading />
+                  )}
+                </ScrollView>
+              ) : (
+                <CustomAlert text="Bağlantı Yok !" />
+              )}
             </View>
             <View style={styles.mainPhotoContainer}>
               <Text style={styles.mainPhotoContainerText}>
@@ -285,3 +288,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 });
+{
+  /* */
+}
